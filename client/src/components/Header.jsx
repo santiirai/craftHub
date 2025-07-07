@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function Header({
   searchQuery,
@@ -12,6 +12,71 @@ export default function Header({
   user,
   onLogout
 }) {
+  // Add state for categories panel
+  const [showCategories, setShowCategories] = useState(false);
+  const categoriesRef = useRef(null);
+
+  // Close panel on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (categoriesRef.current && !categoriesRef.current.contains(event.target)) {
+        setShowCategories(false);
+      }
+    }
+    if (showCategories) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showCategories]);
+
+  // Category data
+  const categories = [
+    {
+      name: "Oil Painting",
+      image:
+        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Sketch",
+      image:
+        "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Crochet",
+      image:
+        "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Knitting",
+      image:
+        "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Kitchen Crafts",
+      image:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Paper Art",
+      image:
+        "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Jewelry Making",
+      image:
+        "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+    },
+    {
+      name: "Embroidery",
+      image:
+        "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80",
+    },
+  ];
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       {/* Top Bar */}
@@ -118,14 +183,45 @@ export default function Header({
       </div>
 
       {/* Main Navigation */}
-      <nav className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white shadow-inner">
+      <nav className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white shadow-inner relative">
         <div className="max-w-7xl mx-auto px-4">
           <ul className="flex items-center space-x-6 py-3 overflow-x-auto scrollbar-hide text-sm font-medium">
-            <li className="whitespace-nowrap hover:text-indigo-200 cursor-pointer">
-              <a href="#" className="flex items-center">
+            <li className="relative whitespace-nowrap hover:text-indigo-200 cursor-pointer select-none" ref={categoriesRef}>
+              <button
+                onClick={() => setShowCategories((prev) => !prev)}
+                className="flex items-center focus:outline-none"
+              >
                 <span>Categories</span>
                 <i className="fas fa-chevron-down ml-1 text-xs"></i>
-              </a>
+              </button>
+              {showCategories && (
+                <>
+                  {/* Backdrop for clarity on mobile/desktop */}
+                  <div className="fixed inset-0 z-[9998]" style={{pointerEvents: 'none'}}></div>
+                  <div className="fixed left-1/2 top-[80px] -translate-x-1/2 w-[600px] max-w-[90vw] bg-white text-gray-900 rounded-xl shadow-2xl z-[9999] p-6 animate-fade-in border border-gray-100">
+                    <h4 className="text-lg font-bold mb-4 text-indigo-700">Explore Categories</h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {categories.map((cat) => (
+                        <div
+                          key={cat.name}
+                          className="flex flex-col items-center bg-gray-50 rounded-lg p-3 hover:bg-indigo-50 transition cursor-pointer group"
+                        >
+                          <div className="w-20 h-20 rounded-full overflow-hidden mb-2 shadow group-hover:shadow-lg">
+                            <img
+                              src={cat.image}
+                              alt={cat.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <span className="font-medium text-sm text-gray-800 group-hover:text-indigo-700">
+                            {cat.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </li>
             <li className="whitespace-nowrap hover:text-indigo-200 cursor-pointer">
               <a href="#">Featured Collections</a>

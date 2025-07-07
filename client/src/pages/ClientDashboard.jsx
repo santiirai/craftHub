@@ -13,7 +13,7 @@ export default function ClientDashboard() {
   const [loading, setLoading] = useState(true);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('khalti');
-  
+
   // Authentication state
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -134,7 +134,7 @@ export default function ClientDashboard() {
   useEffect(() => {
     const initializeData = async () => {
       await verifyUser();
-      fetchData();
+    fetchData();
     };
     initializeData();
   }, []);
@@ -169,7 +169,7 @@ export default function ClientDashboard() {
           const cartData = await cartRes.json();
           const wishlistData = await wishlistRes.json();
 
-          setOrders(ordersData);
+      setOrders(ordersData);
           
           // Convert cart data to match frontend format
           const cartItems = cartData.items?.map(item => ({
@@ -285,7 +285,7 @@ export default function ClientDashboard() {
       
       if (response.ok) {
         fetchData(); // Refresh data
-      } else {
+    } else {
         alert('Failed to remove from wishlist');
       }
     } catch (error) {
@@ -330,7 +330,7 @@ export default function ClientDashboard() {
       
       if (response.ok) {
         fetchData(); // Refresh data from backend
-      } else {
+    } else {
         alert('Failed to update quantity');
       }
     } catch (error) {
@@ -695,15 +695,15 @@ function ProductGrid({ products, onAddToCart, onAddToWishlist }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+      {products.map((product) => (
           <div
             key={product._id}
             className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="h-48 overflow-hidden relative group">
-              <img
-                src={product.image || 'https://via.placeholder.com/300x200'}
-                alt={product.title}
+          <img 
+            src={product.image || 'https://via.placeholder.com/300x200'} 
+            alt={product.title}
                 className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
               />
               <button
@@ -727,7 +727,7 @@ function ProductGrid({ products, onAddToCart, onAddToWishlist }) {
               </div>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-lg font-bold text-gray-900">${product.price?.toFixed(2)}</span>
-                <button
+            <button
                   onClick={() => handleAddToCart(product)}
                   className={`px-4 py-1.5 rounded-xl text-sm font-medium text-white transition ${
                     localCart.includes(product._id)
@@ -736,13 +736,13 @@ function ProductGrid({ products, onAddToCart, onAddToWishlist }) {
                   }`}
                   disabled={localCart.includes(product._id)}
                   aria-label="Add to cart"
-                >
+            >
                   {localCart.includes(product._id) ? "In Cart" : "Add to Cart"}
-                </button>
+            </button>
               </div>
-            </div>
           </div>
-        ))}
+        </div>
+      ))}
       </div>
     </div>
   );
@@ -768,7 +768,7 @@ function CartView({ cart, onRemove, onUpdateQuantity, onCheckout, total }) {
           {cart.length} items
         </div>
       </div>
-
+      
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -792,37 +792,37 @@ function CartView({ cart, onRemove, onUpdateQuantity, onCheckout, total }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {cart.map((item) => (
+        {cart.map((item) => (
                 <tr key={item._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <img 
+            <img 
                         src={item.image || 'https://via.placeholder.com/60x60'} 
-                        alt={item.title}
+              alt={item.title}
                         className="w-12 h-12 object-cover rounded-lg mr-4"
-                      />
+            />
                       <div>
                         <div className="text-sm font-medium text-gray-900">{item.title}</div>
                         <div className="text-sm text-gray-500">{item.description}</div>
                       </div>
-                    </div>
+            </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     ${item.price?.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center space-x-2">
-                      <button
+            <div className="flex items-center space-x-2">
+              <button
                         onClick={() => onUpdateQuantity(item._id, Math.max(1, item.quantity - 1))}
                         className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 hover:text-gray-800"
-                      >
+              >
                         <i className="fas fa-minus text-xs"></i>
-                      </button>
+              </button>
                       <span className="w-12 text-center text-sm font-medium text-gray-900">{item.quantity}</span>
-                      <button
-                        onClick={() => onUpdateQuantity(item._id, item.quantity + 1)}
+              <button
+                onClick={() => onUpdateQuantity(item._id, item.quantity + 1)}
                         className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-gray-600 hover:text-gray-800"
-                      >
+              >
                         <i className="fas fa-plus text-xs"></i>
                       </button>
                     </div>
@@ -837,7 +837,7 @@ function CartView({ cart, onRemove, onUpdateQuantity, onCheckout, total }) {
                       title="Remove from cart"
                     >
                       <i className="fas fa-trash"></i>
-                    </button>
+              </button>
                   </td>
                 </tr>
               ))}
@@ -971,13 +971,13 @@ function WishlistView({ wishlist, onRemoveFromWishlist, onAddToCart }) {
                         <i className="fas fa-shopping-cart mr-1"></i>
                         {localCart.includes(product._id) ? 'In Cart' : 'Add to Cart'}
                       </button>
-                      <button
+        <button
                         onClick={() => onRemoveFromWishlist(product._id)}
                         className="px-3 py-1 text-red-600 hover:text-red-800 border border-red-600 hover:bg-red-50 rounded-md transition-colors"
                         title="Remove from wishlist"
-                      >
+        >
                         <i className="fas fa-trash"></i>
-                      </button>
+        </button>
                     </div>
                   </td>
                 </tr>
@@ -1034,10 +1034,10 @@ function OrderHistory({ orders }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map((order) => (
+      {orders.map((order) => (
                 <tr key={order._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
+            <div>
                       <div className="text-sm font-medium text-gray-900">
                         Order #{order._id.slice(-8).toUpperCase()}
                       </div>
@@ -1086,26 +1086,26 @@ function OrderHistory({ orders }) {
                     </div>
                     <div className="text-xs text-gray-500">
                       {order.products?.length || 0} items
-                    </div>
+            </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
-                      order.paymentStatus === 'Completed' ? 'bg-green-100 text-green-800' :
-                      order.paymentStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
+              order.paymentStatus === 'Completed' ? 'bg-green-100 text-green-800' :
+              order.paymentStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+              'bg-red-100 text-red-800'
+            }`}>
                       <i className={`fas fa-circle mr-1 ${
                         order.paymentStatus === 'Completed' ? 'text-green-500' :
                         order.paymentStatus === 'Pending' ? 'text-yellow-500' :
                         'text-red-500'
                       }`}></i>
                       {order.paymentStatus || 'Unknown'}
-                    </span>
+            </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900 capitalize">
                       {order.paymentMethod || 'Not specified'}
-                    </div>
+          </div>
                     <button
                       className="text-xs text-indigo-600 hover:text-indigo-800 mt-1"
                       onClick={() => {
