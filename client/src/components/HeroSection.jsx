@@ -6,6 +6,14 @@ export default function HeroSection() {
       {/* Hero Section Background Image */}
       <div className="absolute inset-0 bg-[url('https://readdy.ai/api/search-image?query=Professional%20photograph%20of%20a%20modern%20minimalist%20craft%20studio%20interior%20with%20soft%20natural%20lighting%2C%20featuring%20elegant%20craft%20supplies%20and%20materials%20arranged%20artistically.%20The%20scene%20has%20a%20clean%2C%20sophisticated%20aesthetic%20with%20subtle%20textures%20and%20muted%20colors%2C%20perfect%20for%20a%20hero%20background.%20High-end%20photography%20with%20perfect%20composition&width=1440&height=800&seq=14&orientation=landscape')] bg-cover bg-center opacity-10"></div>
       
+      {/* Category Anchors for linking */}
+      <div className="absolute top-0 left-0 w-0 h-0 overflow-hidden">
+        <div id="category-sketch" />
+        <div id="category-crochet" />
+        <div id="category-knitting" />
+        <div id="category-jewelry-making" />
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-20 items-center">
           {/* Left Section */}

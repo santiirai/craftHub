@@ -57,18 +57,29 @@
 import React, { useState } from "react";
 
 const categories = [
-  { name: "All", icon: "fa-th-large" },
-  { name: "Painting", icon: "fa-paint-brush" },
-  { name: "Ceramics", icon: "fa-shapes" },
-  { name: "Knitting", icon: "fa-mitten" },
-  { name: "Woodworking", icon: "fa-hammer" },
-  { name: "Jewelry", icon: "fa-gem" },
-  { name: "Paper Crafts", icon: "fa-cut" },
-  { name: "Embroidery", icon: "fa-spool" },
-  { name: "Candle Making", icon: "fa-fire" },
+  {
+    name: "Sketch",
+    image:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Crochet",
+    image:
+      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Knitting",
+    image:
+      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Jewelry Making",
+    image:
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+  },
 ];
 
-export default function Categories({ onCategorySelect }) {
+export default function Categories({ onCategorySelect, enableAnchors }) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const handleSelect = (name) => {
@@ -92,7 +103,35 @@ export default function Categories({ onCategorySelect }) {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {categories.map((category) => {
             const isActive = activeCategory === category.name;
-            return (
+            const anchor = `#category-${category.name.replace(/\s+/g, '-').toLowerCase()}`;
+            return enableAnchors ? (
+              <a
+                key={category.name}
+                href={anchor}
+                onClick={() => handleSelect(category.name)}
+                className={`flex flex-col items-center justify-center p-6 rounded-lg transition-all duration-300 hover:scale-105 ${
+                  isActive
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "bg-gray-50 text-gray-700 hover:shadow-md"
+                }`}
+              >
+                <div
+                  className={`w-20 h-20 rounded-full overflow-hidden mb-3 shadow group-hover:shadow-lg`}
+                >
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <span className="font-medium text-sm whitespace-nowrap">
+                  {category.name}
+                </span>
+                {isActive && (
+                  <span className="text-xs mt-1 opacity-80">12 Projects</span>
+                )}
+              </a>
+            ) : (
               <button
                 key={category.name}
                 onClick={() => handleSelect(category.name)}
@@ -103,17 +142,13 @@ export default function Categories({ onCategorySelect }) {
                 }`}
               >
                 <div
-                  className={`w-12 h-12 flex items-center justify-center rounded-full mb-3 ${
-                    isActive
-                      ? "bg-white bg-opacity-20"
-                      : "bg-white shadow-sm"
-                  }`}
+                  className={`w-20 h-20 rounded-full overflow-hidden mb-3 shadow group-hover:shadow-lg`}
                 >
-                  <i
-                    className={`fas ${category.icon} text-xl ${
-                      isActive ? "text-white" : "text-indigo-500"
-                    }`}
-                  ></i>
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
                 <span className="font-medium text-sm whitespace-nowrap">
                   {category.name}

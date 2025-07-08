@@ -211,7 +211,7 @@ export default function LandingPage({
 
       {/* Page sections */}
       <HeroSection />
-      <Categories onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />
+      <Categories enableAnchors />
       <FeaturedProducts onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />
       <NewArrivals onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />
       <Guides />

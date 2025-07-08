@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Dashboard from '../pages/Dashboard';
 import RecentActivities from '../components/RecentActivities';
 import RecentProducts from '../components/RecentProducts';
 import SalesChart from '../components/SalesChart';
@@ -212,7 +211,6 @@ const App = () => {
               </div>
             </>
           )}
-
           {activeMenu === 'users' && <div>User Management Page (to implement)</div>}
           {activeMenu === 'products' && <div>Products/Crafts Page (to implement)</div>}
           {activeMenu === 'orders' && <div>Orders Page (to implement)</div>}
