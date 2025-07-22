@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import LandingPage from './pages/LandingPage';
 import ClientDashboard from './pages/ClientDashboard';
+// Import AdminDashboard from the admin build output or as a placeholder
+// If you have a build process that exposes admin dashboard to client, import it here:
+import AdminDashboard from '../../admin/pages/adminDashboard.jsx';
 
 function App() {
   const [cartCount, setCartCount] = useState(0);
@@ -9,6 +12,37 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [currentPage, setCurrentPage] = useState('landing');
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // On mount, check for token and fetch user profile
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:8000/api/users/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(userData => {
+          if (userData) {
+            setUser(userData);
+            setCurrentPage(userData.role === 'admin' ? 'adminDashboard' : 'dashboard');
+          } else {
+            setUser(null);
+            setCurrentPage('landing');
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          setUser(null);
+          setCurrentPage('landing');
+          setLoading(false);
+        });
+    } else {
+      setUser(null);
+      setCurrentPage('landing');
+      setLoading(false);
+    }
+  }, []);
 
   const addNotification = (message, type) => {
     const id = Date.now();
@@ -42,7 +76,11 @@ function App() {
 
   const handleLogin = (userData) => {
     setUser(userData);
-    setCurrentPage('dashboard');
+    if (userData.role === 'admin') {
+      setCurrentPage('adminDashboard');
+    } else {
+      setCurrentPage('dashboard');
+    }
     addNotification('Successfully logged in!', 'success');
   };
 
@@ -55,8 +93,10 @@ function App() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'adminDashboard':
+        return <AdminDashboard user={user} onLogout={handleLogout} />;
       case 'dashboard':
-        return <ClientDashboard />;
+        return <ClientDashboard user={user} onLogout={handleLogout} />;
       case 'landing':
       default:
         return (
@@ -72,6 +112,14 @@ function App() {
         );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="App">

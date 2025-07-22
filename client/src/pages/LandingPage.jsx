@@ -138,6 +138,8 @@ export default function LandingPage({
         onLogin(data.user);
         setIsSignInModalOpen(false);
         setLoginForm({ email: '', password: '' });
+        // Optionally, show the user's role after login
+        alert(`Welcome, ${data.user.name}! Your role is: ${data.user.role}`);
       } else {
         alert(`Login failed: ${data.message}`);
       }
@@ -204,6 +206,7 @@ export default function LandingPage({
       {/*<div className="bg-yellow-100 p-2 text-center text-sm">
         <p>Auth Status: {isAuthenticated() ? 'Authenticated' : 'Not Authenticated'}</p>
         <p>User: {user ? user.name : 'None'}</p>
+        <p>Role: {user ? user.role : 'None'}</p>
         <p>Token: {localStorage.getItem('token') ? 'Present' : 'None'}</p>
       </div>*/}
       
@@ -211,7 +214,8 @@ export default function LandingPage({
 
       {/* Page sections */}
       <HeroSection />
-      <Categories enableAnchors />
+      <Categories enableAnchors user={user} onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />
+      {/* Filter products by selectedCategory */}
       <FeaturedProducts onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />
       <NewArrivals onAddToCart={handleAddToCart} onAddToWishlist={handleAddToWishlist} />
       <Guides />

@@ -6,6 +6,12 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   googleId: { type: String }, // for Google signup
   isAdmin: { type: Boolean, default: false },
+  role: {
+    type: String,
+    enum: ['client', 'admin'],
+    required: true,
+    default: 'client'
+  },
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
 }, { timestamps: true });

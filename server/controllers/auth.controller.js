@@ -23,7 +23,7 @@ export const registerUser = async (req, res) => {
 
     res.status(201).json({ 
       token: generateToken(newUser), 
-      user: { id: newUser._id, name: newUser.name, email: newUser.email } 
+      user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role } 
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -42,17 +42,11 @@ export const loginUser = async (req, res) => {
 
     res.json({ 
       token: generateToken(user), 
-      user: { id: user._id, name: user.name, email: user.email } 
+      user: { id: user._id, name: user.name, email: user.email, role: user.role } 
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-// Google login (simplified placeholder)
-export const googleLogin = async (req, res) => {
-  // implement Google OAuth verification here and user creation/login
-  res.status(501).json({ message: "Google login not implemented yet." });
 };
 
 // Forgot Password (send reset email)

@@ -3,8 +3,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import RegisterModal from '../components/RegisterModal';
 import SignInModal from '../components/SignInModal';
+import Categories from '../components/Categories';
 
-export default function ClientDashboard() {
+export default function ClientDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -17,7 +18,6 @@ export default function ClientDashboard() {
   // Authentication state
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [registerForm, setRegisterForm] = useState({
     name: '',
@@ -30,7 +30,6 @@ export default function ClientDashboard() {
   const isAuthenticated = () => {
     const token = localStorage.getItem('token');
     const isAuth = token && user;
-    console.log('Authentication check:', { token: !!token, user: !!user, isAuth });
     return isAuth;
   };
 
@@ -47,17 +46,15 @@ export default function ClientDashboard() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Login successful, setting user:', data.user);
         localStorage.setItem('token', data.token);
-        setUser(data.user);
+        // Parent will handle user state and rerender
         setIsSignInModalOpen(false);
         setLoginForm({ email: '', password: '' });
         fetchData(); // Refresh data with authentication
       } else {
         alert(`Login failed: ${data.message}`);
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
       alert('Login failed. Please check your connection and try again.');
     }
   };
@@ -90,17 +87,9 @@ export default function ClientDashboard() {
       } else {
         alert(`Registration failed: ${data.message}`);
       }
-    } catch (error) {
-      console.error('Registration error:', error);
+    } catch {
       alert('Registration failed. Please check your connection and try again.');
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setCart([]);
-    setOrders([]);
   };
 
   // Verify user token and get user data
@@ -115,17 +104,17 @@ export default function ClientDashboard() {
         });
         
         if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
+          await response.json();
+          // setUser(userData); // This line is removed as user is now a prop
         } else {
           // Token is invalid, remove it
           localStorage.removeItem('token');
-          setUser(null);
+          // setUser(null); // This line is removed as user is now a prop
         }
       } catch (error) {
         console.error('Error verifying user:', error);
         localStorage.removeItem('token');
-        setUser(null);
+        // setUser(null); // This line is removed as user is now a prop
       }
     }
   };
@@ -387,7 +376,16 @@ export default function ClientDashboard() {
   const renderContent = () => {
     switch (activeTab) {
       case 'products':
-        return <ProductGrid products={products} onAddToCart={addToCart} onAddToWishlist={addToWishlist} />;
+        return (
+          <>
+            <Categories products={products} enableAnchors user={user} onAddToCart={addToCart} onAddToWishlist={addToWishlist} wishlist={wishlist} />
+            <ProductGrid
+              products={products}
+              onAddToCart={addToCart}
+              onAddToWishlist={addToWishlist}
+            />
+          </>
+        );
       case 'cart':
         return (
           <CartView 
@@ -407,6 +405,8 @@ export default function ClientDashboard() {
     }
   };
 
+  if (!user) return null;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -419,7 +419,7 @@ export default function ClientDashboard() {
     <div className="min-h-screen bg-gray-50">
       <Header 
         user={user}
-        onLogout={handleLogout}
+        onLogout={onLogout}
         setIsSignInModalOpen={setIsSignInModalOpen}
         setIsRegisterModalOpen={setIsRegisterModalOpen}
         cartCount={cart.length}

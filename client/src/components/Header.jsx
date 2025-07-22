@@ -10,7 +10,8 @@ export default function Header({
   setIsSignInModalOpen,
   setIsRegisterModalOpen,
   user,
-  onLogout
+  onLogout,
+  onCategorySelect // <-- add this prop
 }) {
   // Add state for categories panel
   const [showCategories, setShowCategories] = useState(false);
@@ -186,6 +187,10 @@ export default function Header({
                         <div
                           key={cat.name}
                           className="flex flex-col items-center bg-gray-50 rounded-lg p-3 hover:bg-indigo-50 transition cursor-pointer group"
+                          onClick={() => {
+                            if (onCategorySelect) onCategorySelect(cat.name);
+                            setShowCategories(false);
+                          }}
                         >
                           <div className="w-20 h-20 rounded-full overflow-hidden mb-2 shadow group-hover:shadow-lg">
                             <img

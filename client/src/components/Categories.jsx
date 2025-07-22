@@ -79,13 +79,32 @@ const categories = [
   },
 ];
 
-export default function Categories({ onCategorySelect, enableAnchors }) {
+export default function Categories({ products = [], onCategorySelect, enableAnchors, user, onAddToCart, onAddToWishlist, wishlist = [] }) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const handleSelect = (name) => {
     setActiveCategory(name);
     if (onCategorySelect) onCategorySelect(name); // notify parent if needed
   };
+
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating || 0);
+    const halfStar = (rating || 0) % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+    const stars = [];
+    for (let i = 0; i < fullStars; i++) stars.push(<i key={`full-${i}`} className="fas fa-star text-yellow-400 text-sm"></i>);
+    if (halfStar) stars.push(<i key="half" className="fas fa-star-half-alt text-yellow-400 text-sm"></i>);
+    for (let i = 0; i < emptyStars; i++) stars.push(<i key={`empty-${i}`} className="far fa-star text-yellow-400 text-sm"></i>);
+    return stars;
+  };
+
+  // Filter real products by selected category
+  const filteredProducts = activeCategory !== "All"
+    ? products.filter(p => p.category === activeCategory)
+    : [];
+
+  // Get wishlisted product IDs for quick lookup
+  const wishlistIds = Array.isArray(wishlist) ? wishlist.map(item => item._id || item.id) : [];
 
   return (
     <section className="bg-white py-10">
@@ -100,7 +119,7 @@ export default function Categories({ onCategorySelect, enableAnchors }) {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
           {categories.map((category) => {
             const isActive = activeCategory === category.name;
             const anchor = `#category-${category.name.replace(/\s+/g, '-').toLowerCase()}`;
@@ -160,6 +179,52 @@ export default function Categories({ onCategorySelect, enableAnchors }) {
             );
           })}
         </div>
+
+        {/* Product grid for selected category */}
+        {activeCategory !== "All" && filteredProducts.length > 0 && (
+          <div className="mb-8">
+            <h4 className="text-xl font-bold mb-4 text-indigo-700">{activeCategory} Products</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <div key={product._id || product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <div className="h-48 overflow-hidden relative group">
+                    <img src={product.image} alt={product.title || product.name} className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105" />
+                    {user && (
+                      <button
+                        onClick={() => onAddToWishlist && onAddToWishlist(product)}
+                        className={`absolute top-2 right-2 p-2 rounded-full shadow transition-colors text-sm bg-white ${wishlistIds.includes(product._id || product.id) ? 'text-red-500' : 'text-gray-600 hover:bg-gray-100 hover:text-red-500'}`}
+                        aria-label="Add to wishlist"
+                      >
+                        <i className={wishlistIds.includes(product._id || product.id) ? "fas fa-heart" : "far fa-heart"}></i>
+                      </button>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-base font-semibold text-gray-800 mb-1">{product.title || product.name}</h3>
+                    <div className="flex items-center mb-2">
+                      <div className="flex mr-2">{renderStars(product.rating)}</div>
+                      <span className="text-xs text-gray-500">({product.rating || 0})</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-4">
+                      <span className="text-lg font-bold text-gray-900">${product.price?.toFixed(2)}</span>
+                      {user ? (
+                        <button
+                          onClick={() => onAddToCart && onAddToCart(product)}
+                          className="px-3 py-2 rounded-full text-white bg-indigo-600 hover:bg-indigo-700 transition flex items-center justify-center"
+                          aria-label="Add to cart"
+                        >
+                          <i className="fas fa-shopping-cart"></i>
+                        </button>
+                      ) : (
+                        <span className="text-xs text-gray-400 ml-2">Sign in to shop</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
